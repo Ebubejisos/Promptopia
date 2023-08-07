@@ -6,16 +6,13 @@ interface metaData {
   title: string;
   description: string;
 }
-interface layoutProp {
-  children: ReactNode;
-}
 
 export const metadata: metaData = {
   title: 'Promptopia',
   description: 'Discover & Share AI Prompts',
 };
 
-const RootLayout = ({ children }: layoutProp) => {
+const RootLayout = ({ children }: { children: ReactNode }) => {
   return (
     <html lang='en'>
       <body>
