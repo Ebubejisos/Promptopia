@@ -1,26 +1,46 @@
 'use client';
 
 import { MouseEventHandler } from 'react';
-import { NextApiResponse } from 'next';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useState, useEffect } from 'react';
-import { signIn, signOut, useSession, getProviders } from 'next-auth/react';
+import {
+  signIn,
+  signOut,
+  useSession,
+  getProviders,
+  LiteralUnion,
+  ClientSafeProvider,
+} from 'next-auth/react';
+import { BuiltInProviderType } from 'next-auth/providers/index';
+// import { connectToDB } from '@utils/database';
+
+type provider = Record<
+  LiteralUnion<BuiltInProviderType, string>,
+  ClientSafeProvider
+>;
 
 const Nav = () => {
-  const isUserLoggedIn: boolean = true;
-  const [providers, setProviders] = useState<NextApiResponse | null>(null);
+  // const db = connectToDB();
+  const { data: session } = useSession();
+  const [providers, setProviders] = useState<provider | null>(null);
+  const [toggleDropdown, setToggleDropdown] = useState<boolean>(false);
   const handleSignOut: MouseEventHandler = async (e) => {
     e.preventDefault();
 
     await signOut();
   };
   useEffect(() => {
-    const setProvider = async () => {
-      const response: NextApiResponse = await getProviders();
-      setProviders(response);
+    const setNextProviders = async () => {
+      try {
+        const response = await getProviders();
+        setProviders(response);
+        console.log('retrieved provider', providers);
+      } catch (error) {
+        console.error(error);
+      }
     };
-    setProvider();
+    setNextProviders();
   }, []);
 
   return (
@@ -37,7 +57,7 @@ const Nav = () => {
       </Link>
       {/* Desktop Navigation */}
       <div className='hidden sm:flex'>
-        {isUserLoggedIn ? (
+        {session?.user ? (
           <div className='flex gap-3 md:gap-5'>
             <Link href='/create-prompt' className='black_btn'>
               Create Post
@@ -60,6 +80,66 @@ const Nav = () => {
                 alt='profile'
               />
             </Link>
+          </div>
+        ) : (
+          <>
+            {providers &&
+              Object.values(providers).map((provider) => (
+                <button
+                  type='button'
+                  key={provider.name}
+                  onClick={() => signIn(provider.id)}
+                  className='black_btn'
+                >
+                  Sign In
+                </button>
+              ))}
+          </>
+        )}
+      </div>
+      {/* Mobile Navigation */}
+      <div className='relative flex sm:hidden'>
+        {session?.user ? (
+          <div className='flex'>
+            <Image
+              src='/assets/images/empty_avatar.cedf234c.png'
+              width={37}
+              height={37}
+              className='rounded-full'
+              alt='profile'
+              onClick={() => {
+                setToggleDropdown((prev) => !prev);
+              }}
+            />
+
+            {toggleDropdown && (
+              <div className='dropdown'>
+                <Link
+                  href='/profile'
+                  className='dropdown_link'
+                  onClick={() => setToggleDropdown(false)}
+                >
+                  My Profile
+                </Link>
+                <Link
+                  href='/create-prompt'
+                  className='dropdown_link'
+                  onClick={() => setToggleDropdown(false)}
+                >
+                  Create Prompt
+                </Link>
+                <button
+                  type='button'
+                  onClick={() => {
+                    setToggleDropdown(false);
+                    signOut();
+                  }}
+                  className='black_btn mt-5 w-full'
+                >
+                  Sign Out
+                </button>
+              </div>
+            )}
           </div>
         ) : (
           <>

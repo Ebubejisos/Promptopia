@@ -1,6 +1,9 @@
 import { ReactNode } from 'react';
 import '@styles/globals.css';
 import Nav from '@components/Nav';
+import Provider from '@components/Provider';
+import { getServerSession } from 'next-auth';
+import { GET } from './api/auth/[...nextauth]/route';
 
 interface metaData {
   title: string;
@@ -16,14 +19,16 @@ const RootLayout = ({ children }: { children: ReactNode }) => {
   return (
     <html lang='en'>
       <body>
-        <div className='main'>
-          <div className='gradient' />
-        </div>
+        <Provider>
+          <div className='main'>
+            <div className='gradient' />
+          </div>
 
-        <main className='app'>
-          <Nav />
-          {children}
-        </main>
+          <main className='app'>
+            <Nav />
+            {children}
+          </main>
+        </Provider>
       </body>
     </html>
   );
