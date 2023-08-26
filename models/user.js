@@ -18,7 +18,7 @@ const UserSchema = new Schema({
     type: String,
   },
 });
-// check if a user is already in the database there and if only it is'nt then create a new user using the schema
+// check if a user is already in the database and if only it is'nt then create a new user using the schema
 const User = models.User || model("User", UserSchema);
 
 export default User; 

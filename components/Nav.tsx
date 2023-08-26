@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 'use client';
 
 import { MouseEventHandler } from 'react';
@@ -23,6 +24,7 @@ type provider = Record<
 const Nav = () => {
   // const db = connectToDB();
   const { data: session } = useSession();
+  console.log(session);
   const [providers, setProviders] = useState<provider | null>(null);
   const [toggleDropdown, setToggleDropdown] = useState<boolean>(false);
   const handleSignOut: MouseEventHandler = async (e) => {
@@ -34,8 +36,10 @@ const Nav = () => {
     const setNextProviders = async () => {
       try {
         const response = await getProviders();
-        setProviders(response);
-        console.log('retrieved provider', providers);
+        setProviders((prev) => {
+          console.log(response);
+          return response;
+        });
       } catch (error) {
         console.error(error);
       }
@@ -51,7 +55,6 @@ const Nav = () => {
           alt='Promptopia Logo'
           width={30}
           height={30}
-          className='object-contain'
         />
         <p className='logo_text'>Promptopia</p>
       </Link>
