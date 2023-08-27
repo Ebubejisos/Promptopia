@@ -27,6 +27,7 @@ const Nav = () => {
   console.log(session);
   const [providers, setProviders] = useState<provider | null>(null);
   const [toggleDropdown, setToggleDropdown] = useState<boolean>(false);
+
   const handleSignOut: MouseEventHandler = async (e) => {
     e.preventDefault();
 
@@ -63,7 +64,7 @@ const Nav = () => {
         {session?.user ? (
           <div className='flex gap-3 md:gap-5'>
             <Link href='/create-prompt' className='black_btn'>
-              Create Post
+              Create Prompt
             </Link>
 
             <button
@@ -76,7 +77,7 @@ const Nav = () => {
 
             <Link href='/profile'>
               <Image
-                src='/assets/images/empty_avatar.cedf234c.png'
+                src={session?.user.image as string}
                 width={37}
                 height={37}
                 className='rounded-full'
@@ -105,7 +106,7 @@ const Nav = () => {
         {session?.user ? (
           <div className='flex'>
             <Image
-              src='/assets/images/empty_avatar.cedf234c.png'
+              src={session?.user.image as string}
               width={37}
               height={37}
               className='rounded-full'
