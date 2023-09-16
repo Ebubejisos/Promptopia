@@ -14,7 +14,7 @@ import {
   ClientSafeProvider,
 } from 'next-auth/react';
 import { BuiltInProviderType } from 'next-auth/providers/index';
-// import { connectToDB } from '@utils/database';
+import { useRouter } from 'next/navigation';
 
 type provider = Record<
   LiteralUnion<BuiltInProviderType, string>,
@@ -22,16 +22,19 @@ type provider = Record<
 >;
 
 const Nav = () => {
-  // const db = connectToDB();
+  // Hooks
   const { data: session } = useSession();
   console.log(session);
+  const router = useRouter();
+
+  // UseStates
   const [providers, setProviders] = useState<provider | null>(null);
   const [toggleDropdown, setToggleDropdown] = useState<boolean>(false);
 
   const handleSignOut: MouseEventHandler = async (e) => {
     e.preventDefault();
-
     await signOut();
+    router.push('/');
   };
   useEffect(() => {
     const setNextProviders = async () => {
@@ -137,6 +140,7 @@ const Nav = () => {
                   onClick={() => {
                     setToggleDropdown(false);
                     signOut();
+                    router.push('/');
                   }}
                   className='black_btn mt-5 w-full'
                 >

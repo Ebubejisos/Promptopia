@@ -1,11 +1,11 @@
 import React, { Dispatch, FormEventHandler, SetStateAction } from 'react';
 import Link from 'next/link';
 
+// custom types
 interface Post {
   prompt: string;
   tag: string;
 }
-
 interface FormProps {
   type: string;
   post: Post;
