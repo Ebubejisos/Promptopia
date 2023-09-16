@@ -5,6 +5,7 @@ import Prompt from '@models/prompt';
 export const GET = async (req, { params }) => {
   try {
     await connectToDB();
+    console.log("ran get request")
     const prompt = await Prompt.findById(params.id).populate('creator');
     if (!prompt) return new Response("Prompts not found", { status: 404 });
 
@@ -15,10 +16,11 @@ export const GET = async (req, { params }) => {
 }
 // PATCH (update)
 export const PATCH = async (req, { params }) => {
-  const { prompt, tag } = await request.json();
+  const { prompt, tag } = await req.json();
 
   try {
     await connectToDB();
+    console.log("ran patch request")
 
     const existingPrompt = await Prompt.findById(params.id);
     if (!existingPrompt) return new Response("Prompt not found", { status: 404 });

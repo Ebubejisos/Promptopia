@@ -2,17 +2,19 @@ import React, { MouseEventHandler } from 'react';
 
 import PromptCard from './PromptCard';
 
+// typescript types
+interface Post {
+  _id: string;
+  creator: any;
+  prompt: string;
+  tag: string;
+}
 interface PropType {
   name?: string;
   desc?: string;
-  data: {
-    _id: string;
-    creator: any;
-    prompt: string;
-    tag: string;
-  }[];
-  handleEdit?: MouseEventHandler;
-  handleDelete?: MouseEventHandler;
+  data: Post[];
+  handleEdit?: (arg: Post) => void;
+  handleDelete?: (arg: Post) => void;
 }
 
 const Profile = ({ name, desc, data, handleEdit, handleDelete }: PropType) => {

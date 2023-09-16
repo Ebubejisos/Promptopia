@@ -5,7 +5,7 @@ export const GET = async (req, { params }) => {
   try {
     await connectToDB();
     const prompts = await Prompt.find({
-      // assesses the dynamic route(i.e[id] in file structure) in other to fetch only posts specific to the currently logged in user
+      // assesses the dynamic route(i.e[id] in file structure) made available through params, so as to fetch only posts specific to the currently logged in user
       creator: params.id
     }).populate('creator');
     return new Response(JSON.stringify(prompts), { status: 200 })
