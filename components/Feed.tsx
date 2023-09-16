@@ -47,7 +47,9 @@ const Feed = () => {
       setPosts(data);
     };
     fetchPosts();
-  }, []);
+
+    return () => {};
+  }, [posts]);
 
   return (
     <section className='feed'>
