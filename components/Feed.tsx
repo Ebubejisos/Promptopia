@@ -35,11 +35,10 @@ const PromptCardList = ({ data, handleTagClick }: PromptCardListPropType) => {
 };
 
 const Feed = () => {
+  // UseStates
   const [searchText, setSearchText] = useState('');
   const [posts, setPosts] = useState<Posts[]>([]);
-
-  const handleSearchChange: ChangeEventHandler = (e) => {};
-
+  // UseEffect Hook
   useEffect(() => {
     const fetchPosts = async () => {
       const response = await fetch('/api/prompt');
@@ -49,7 +48,9 @@ const Feed = () => {
     fetchPosts();
 
     return () => {};
-  }, [posts]);
+  }, []);
+  // Functions
+  const handleSearchChange: ChangeEventHandler = (e) => {};
 
   return (
     <section className='feed'>
