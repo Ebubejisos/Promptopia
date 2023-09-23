@@ -33,6 +33,7 @@ const ProfilePage = () => {
   // UseStates
   const [posts, setPosts] = useState<Posts[]>([]);
 
+  // useEffect
   useEffect(() => {
     const fetchPosts = async () => {
       const response = await fetch(

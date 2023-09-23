@@ -30,14 +30,13 @@ const Nav = () => {
   // UseStates
   const [providers, setProviders] = useState<provider | null>(null);
   const [toggleDropdown, setToggleDropdown] = useState<boolean>(false);
-
-  const handleSignOut: MouseEventHandler = async (e) => {
-    e.preventDefault();
+  // functions
+  const handleSignOut: MouseEventHandler = async () => {
     await signOut();
-    router.push('/');
+    if (!session?.user) router.push('/');
   };
   useEffect(() => {
-    const setNextProviders = async () => {
+    (async () => {
       try {
         const response = await getProviders();
         setProviders((prev) => {
@@ -47,8 +46,7 @@ const Nav = () => {
       } catch (error) {
         console.error(error);
       }
-    };
-    setNextProviders();
+    })();
   }, []);
 
   return (
@@ -137,10 +135,10 @@ const Nav = () => {
                 </Link>
                 <button
                   type='button'
-                  onClick={() => {
+                  onClick={async () => {
                     setToggleDropdown(false);
-                    signOut();
-                    router.push('/');
+                    await signOut();
+                    if (!session?.user) router.push('/');
                   }}
                   className='black_btn mt-5 w-full'
                 >
