@@ -14,7 +14,7 @@ import {
   ClientSafeProvider,
 } from 'next-auth/react';
 import { BuiltInProviderType } from 'next-auth/providers/index';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 
 type provider = Record<
   LiteralUnion<BuiltInProviderType, string>,
@@ -26,6 +26,7 @@ const Nav = () => {
   const { data: session } = useSession();
   console.log(session);
   const router = useRouter();
+  const pathName = usePathname();
 
   // UseStates
   const [providers, setProviders] = useState<provider | null>(null);
@@ -48,7 +49,6 @@ const Nav = () => {
       }
     })();
   }, []);
-
   return (
     <nav className='flex-between mb-16 w-full pt-3'>
       <Link href='/' className='flex-center flex gap-2'>
@@ -93,8 +93,12 @@ const Nav = () => {
                 <button
                   type='button'
                   key={provider.name}
-                  onClick={() => signIn(provider.id)}
-                  className='black_btn'
+                  onClick={() => router.push('/login')}
+                  className={
+                    pathName === '/login' || pathName === '/register'
+                      ? 'hidden'
+                      : 'black_btn'
+                  }
                 >
                   Sign In
                 </button>
@@ -140,7 +144,11 @@ const Nav = () => {
                     await signOut();
                     if (!session?.user) router.push('/');
                   }}
-                  className='black_btn mt-5 w-full'
+                  className={
+                    pathName === '/login' || pathName === '/register'
+                      ? 'hidden'
+                      : 'black_btn mt-5 w-full'
+                  }
                 >
                   Sign Out
                 </button>
@@ -154,7 +162,7 @@ const Nav = () => {
                 <button
                   type='button'
                   key={provider.name}
-                  onClick={() => signIn(provider.id)}
+                  onClick={() => router.push('/login')}
                   className='black_btn'
                 >
                   Sign In

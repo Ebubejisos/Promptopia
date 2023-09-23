@@ -1,5 +1,6 @@
 'use client';
 
+import { signIn } from 'next-auth/react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { FormEventHandler } from 'react';
@@ -11,7 +12,7 @@ const SignUp = () => {
   };
   return (
     <>
-      <div className='flex min-h-full flex-1 flex-col justify-center px-1 py-4 lg:px-2'>
+      <div className='flex min-h-full flex-1 flex-col justify-center px-1 py-6 lg:px-2'>
         <div className='sm:mx-auto sm:w-full sm:max-w-sm'>
           <Image
             src='/assets/images/logo.svg'
@@ -28,8 +29,8 @@ const SignUp = () => {
         <div className='mt-3'>
           <button
             type='button'
-            className='flex w-full justify-center border-t-2 bg-transparent px-3 py-1.5 text-sm font-bold text-indigo-600 hover:text-indigo-400'
-            onClick={() => {}}
+            className='flex w-full justify-center rounded border-2 bg-transparent px-3 py-1.5 text-sm font-bold text-indigo-600 hover:text-indigo-400'
+            onClick={() => signIn('google')}
           >
             or Continue with
             <span className='mx-2'>
@@ -61,6 +62,7 @@ const SignUp = () => {
                   type='text'
                   required
                   className='rounded px-3 py-1 text-sm text-gray-500 outline-none'
+                  autoFocus
                 />
               </div>
             </div>
