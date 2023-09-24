@@ -1,12 +1,10 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 'use client';
 
-import { MouseEventHandler } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useState, useEffect } from 'react';
 import {
-  signIn,
   signOut,
   useSession,
   getProviders,
@@ -24,24 +22,19 @@ type provider = Record<
 const Nav = () => {
   // Hooks
   const { data: session } = useSession();
-  console.log(session);
   const router = useRouter();
   const pathName = usePathname();
 
   // UseStates
   const [providers, setProviders] = useState<provider | null>(null);
   const [toggleDropdown, setToggleDropdown] = useState<boolean>(false);
-  // functions
-  const handleSignOut: MouseEventHandler = async () => {
-    await signOut();
-    if (!session?.user) router.push('/');
-  };
+
+  // sideEffects
   useEffect(() => {
     (async () => {
       try {
         const response = await getProviders();
         setProviders((prev) => {
-          console.log(response);
           return response;
         });
       } catch (error) {
@@ -49,6 +42,16 @@ const Nav = () => {
       }
     })();
   }, []);
+  // place page boundaries for signed out users
+  useEffect(() => {
+    if (
+      (!session?.user && pathName != '/login') ||
+      (!session?.user && pathName != '/register')
+    ) {
+      router.replace('/');
+    }
+  }, [session, router]);
+
   return (
     <nav className='flex-between mb-16 w-full pt-3'>
       <Link href='/' className='flex-center flex gap-2'>
@@ -70,7 +73,7 @@ const Nav = () => {
 
             <button
               type='button'
-              onClick={handleSignOut}
+              onClick={() => signOut()}
               className='outline_btn'
             >
               Sign Out
@@ -139,10 +142,9 @@ const Nav = () => {
                 </Link>
                 <button
                   type='button'
-                  onClick={async () => {
+                  onClick={() => {
                     setToggleDropdown(false);
-                    await signOut();
-                    if (!session?.user) router.push('/');
+                    signOut();
                   }}
                   className={
                     pathName === '/login' || pathName === '/register'

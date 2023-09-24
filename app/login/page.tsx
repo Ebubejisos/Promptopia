@@ -4,8 +4,11 @@ import { signIn } from 'next-auth/react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { FormEventHandler } from 'react';
+import { useRouter } from 'next/navigation';
 
 const Login = () => {
+  // hooks
+  const router = useRouter();
   // FUNCTION
   const handleSubmit: FormEventHandler = (e) => {
     e.preventDefault();
@@ -30,7 +33,9 @@ const Login = () => {
           <button
             type='button'
             className='flex w-full justify-center rounded border-2 bg-transparent px-3 py-1.5 text-sm font-bold text-indigo-600 hover:text-indigo-400'
-            onClick={() => signIn('google')}
+            onClick={async () =>
+              signIn('google').then(() => router.replace('/'))
+            }
           >
             or Continue with
             <span className='mx-2'>
