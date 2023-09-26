@@ -3,12 +3,47 @@
 import { signIn } from 'next-auth/react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { FormEventHandler } from 'react';
+import { FormEventHandler, useState } from 'react';
+import { useRouter } from 'next/navigation';
 
+// typescript types
+interface UserData {
+  name: string;
+  email: string;
+  password: string;
+  Cpassword: string;
+}
+// COMPONENT
 const SignUp = () => {
+  // Hooks
+  const router = useRouter();
+  // useStates
+  const [data, setData] = useState<UserData>({
+    name: '',
+    email: '',
+    password: '',
+    Cpassword: '',
+  });
   // FUNCTION
-  const handleSubmit: FormEventHandler = (e) => {
+  const handleSubmit: FormEventHandler = async (e) => {
     e.preventDefault();
+
+    try {
+      const response = await fetch('/api/register', {
+        method: 'POST',
+        body: JSON.stringify({
+          username: data.name,
+          email: data.email,
+          password: data.password,
+        }),
+      });
+
+      if (response.ok) {
+        router.push('/login');
+      }
+    } catch (error) {
+      console.error(error);
+    }
   };
   return (
     <>
@@ -48,6 +83,7 @@ const SignUp = () => {
 
         <div className='mt-6 sm:mx-auto sm:w-full sm:max-w-sm'>
           <form className='space-y-4' onSubmit={handleSubmit}>
+            {/* USERNAME */}
             <div>
               <label
                 htmlFor='username'
@@ -60,13 +96,38 @@ const SignUp = () => {
                   id='username'
                   name='username'
                   type='text'
+                  value={data.name}
                   required
                   className='rounded px-3 py-1 text-sm text-gray-500 outline-none'
                   autoFocus
+                  onChange={(e) => setData({ ...data, name: e.target.value })}
                 />
               </div>
             </div>
 
+            {/* EMAIL */}
+            <div>
+              <label
+                htmlFor='email'
+                className='block text-sm font-medium leading-3 text-gray-900'
+              >
+                Email
+              </label>
+              <div className='mt-1'>
+                <input
+                  id='email'
+                  name='email'
+                  type='email'
+                  value={data.email}
+                  required
+                  className='rounded px-3 py-1 text-sm text-gray-500 outline-none'
+                  autoFocus
+                  onChange={(e) => setData({ ...data, email: e.target.value })}
+                />
+              </div>
+            </div>
+
+            {/* PASSWORD */}
             <div>
               <div className='flex items-center justify-between'>
                 <label
@@ -81,8 +142,12 @@ const SignUp = () => {
                   id='password'
                   name='password'
                   type='password'
+                  value={data.password}
                   required
                   className='rounded px-3 py-1 text-sm text-gray-500 outline-none'
+                  onChange={(e) =>
+                    setData({ ...data, password: e.target.value })
+                  }
                 />
               </div>
             </div>
@@ -101,8 +166,12 @@ const SignUp = () => {
                   id='Cpassword'
                   name='Cpassword'
                   type='password'
+                  value={data.Cpassword}
                   required
                   className='rounded px-3 py-1 text-sm text-gray-500 outline-none'
+                  onChange={(e) =>
+                    setData({ ...data, Cpassword: e.target.value })
+                  }
                 />
               </div>
             </div>

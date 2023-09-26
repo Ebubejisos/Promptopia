@@ -1,4 +1,7 @@
-import { Schema, model, models } from 'mongoose';
+import mongooseApi from 'mongoose';
+import bcrypt from 'bcrypt';
+
+const { Schema, model, models } = mongooseApi;
 
 const UserSchema = new Schema({
   email: {
@@ -17,7 +20,26 @@ const UserSchema = new Schema({
   image: {
     type: String,
   },
+  hashedPassword: {
+    type: String,
+  },
 });
+
+// Hash and set the password before saving
+UserSchema.pre('save', async function (next) {
+  if (this.isModified('hashedPassword') || this.isNew) {
+    try {
+      const hashedPassword = await bcrypt.hash(this.hashedPassword, 10);
+      this.hashedPassword = hashedPassword;
+      next();
+    } catch (err) {
+      next(err);
+    }
+  } else {
+    return next();
+  }
+});
+
 // check if a user is already in the database and if only it is'nt then create a new user using the schema
 const User = models.User || model("User", UserSchema);
 
