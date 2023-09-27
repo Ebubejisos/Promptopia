@@ -4,20 +4,8 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { useState, useEffect } from 'react';
-import {
-  signOut,
-  useSession,
-  getProviders,
-  LiteralUnion,
-  ClientSafeProvider,
-} from 'next-auth/react';
-import { BuiltInProviderType } from 'next-auth/providers/index';
+import { signOut, useSession } from 'next-auth/react';
 import { usePathname, useRouter } from 'next/navigation';
-
-type provider = Record<
-  LiteralUnion<BuiltInProviderType, string>,
-  ClientSafeProvider
->;
 
 const Nav = () => {
   // Hooks
@@ -26,22 +14,9 @@ const Nav = () => {
   const pathName = usePathname();
 
   // UseStates
-  const [providers, setProviders] = useState<provider | null>(null);
   const [toggleDropdown, setToggleDropdown] = useState<boolean>(false);
 
   // sideEffects
-  useEffect(() => {
-    (async () => {
-      try {
-        const response = await getProviders();
-        setProviders((prev) => {
-          return response;
-        });
-      } catch (error) {
-        console.error(error);
-      }
-    })();
-  }, []);
   // place page boundaries for signed out users
   useEffect(() => {
     if (
@@ -91,21 +66,17 @@ const Nav = () => {
           </div>
         ) : (
           <>
-            {providers &&
-              Object.values(providers).map((provider) => (
-                <button
-                  type='button'
-                  key={provider.name}
-                  onClick={() => router.push('/login')}
-                  className={
-                    pathName === '/login' || pathName === '/register'
-                      ? 'hidden'
-                      : 'black_btn'
-                  }
-                >
-                  Sign In
-                </button>
-              ))}
+            <button
+              type='button'
+              onClick={() => router.push('/login')}
+              className={
+                pathName === '/login' || pathName === '/register'
+                  ? 'hidden'
+                  : 'black_btn'
+              }
+            >
+              Sign In
+            </button>
           </>
         )}
       </div>
@@ -159,17 +130,13 @@ const Nav = () => {
           </div>
         ) : (
           <>
-            {providers &&
-              Object.values(providers).map((provider) => (
-                <button
-                  type='button'
-                  key={provider.name}
-                  onClick={() => router.push('/login')}
-                  className='black_btn'
-                >
-                  Sign In
-                </button>
-              ))}
+            <button
+              type='button'
+              onClick={() => router.push('/login')}
+              className='black_btn'
+            >
+              Sign In
+            </button>
           </>
         )}
       </div>

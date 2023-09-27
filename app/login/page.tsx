@@ -3,16 +3,33 @@
 import { signIn } from 'next-auth/react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { FormEventHandler } from 'react';
+import { FormEventHandler, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { toast } from 'react-hot-toast';
 
 const Login = () => {
   // hooks
   const router = useRouter();
+  // useStates
+  const [data, setData] = useState({
+    username: '',
+    password: '',
+  });
   // FUNCTION
-  const handleSubmit: FormEventHandler = (e) => {
+  const handleSubmit: FormEventHandler = async (e) => {
     e.preventDefault();
+    signIn('credentials', { ...data, redirect: false }).then((callback) => {
+      if (callback?.error) {
+        toast.error(callback.error);
+      }
+      if (callback?.ok && !callback?.error) {
+        router.push('/');
+        toast.success('Logged in successfully!');
+      }
+    });
   };
+
+  // COMPONENT
   return (
     <>
       <div className='flex min-h-full flex-1 flex-col justify-center px-1 py-6 lg:px-2'>
@@ -65,8 +82,12 @@ const Login = () => {
                   id='username'
                   name='username'
                   type='text'
+                  value={data.username}
                   required
-                  className='rounded px-3 py-1 text-sm text-gray-500 outline-none'
+                  className='w-full rounded px-3 py-1 text-sm text-gray-500 outline-none'
+                  onChange={(e) =>
+                    setData({ ...data, username: e.target.value })
+                  }
                   autoFocus
                 />
               </div>
@@ -86,8 +107,12 @@ const Login = () => {
                   id='password'
                   name='password'
                   type='password'
+                  value={data.password}
                   required
-                  className='rounded px-3 py-1 text-sm text-gray-500 outline-none'
+                  className='w-full rounded px-3 py-1 text-sm text-gray-500 outline-none'
+                  onChange={(e) =>
+                    setData({ ...data, password: e.target.value })
+                  }
                 />
               </div>
             </div>
@@ -108,7 +133,7 @@ const Login = () => {
               href='/register'
               className='font-semibold leading-6 text-indigo-600 hover:text-indigo-500'
             >
-              sign-up
+              register an account
             </Link>
           </p>
         </div>

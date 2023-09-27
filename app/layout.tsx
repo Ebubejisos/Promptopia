@@ -1,10 +1,8 @@
 import { ReactNode } from 'react';
 import '@styles/globals.css';
 import Nav from '@components/Nav';
-import Provider from '@components/Provider';
-import { getServerSession } from 'next-auth';
-import { GET } from './api/auth/[...nextauth]/route';
-
+import Provider from '@context/Provider';
+import ToasterContext from '@context/ToasterContext';
 interface metaData {
   title: string;
   description: string;
@@ -20,6 +18,7 @@ const RootLayout = ({ children }: { children: ReactNode }) => {
     <html lang='en' className='h-full bg-white'>
       <body className='h-full'>
         <Provider>
+          <ToasterContext />
           <div className='main'>
             <div className='gradient' />
           </div>
