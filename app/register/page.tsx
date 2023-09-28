@@ -1,10 +1,13 @@
 'use client';
 
 import { signIn } from 'next-auth/react';
-import Link from 'next/link';
-import Image from 'next/image';
 import { FormEventHandler, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { toast } from 'react-hot-toast';
+
+import Link from 'next/link';
+import Image from 'next/image';
+import Mask from '@components/Mask';
 
 // typescript types
 interface UserData {
@@ -24,10 +27,12 @@ const SignUp = () => {
     password: '',
     Cpassword: '',
   });
+  const [isMasked, setIsMasked] = useState<boolean>(true);
+  const [pending, setPending] = useState<boolean>(false);
   // FUNCTION
   const handleSubmit: FormEventHandler = async (e) => {
     e.preventDefault();
-
+    setPending(true);
     try {
       const response = await fetch('/api/register', {
         method: 'POST',
@@ -39,12 +44,28 @@ const SignUp = () => {
       });
 
       if (response.ok) {
+        toast.success('Registered successfully');
         router.push('/login');
+      } else {
+        const data = await response.json();
+        if (data.error) {
+          toast.error(data.error); // Display the error message returned from the server
+        } else {
+          toast.error('Failed to register'); // Fallback error message
+        }
       }
     } catch (error) {
       console.error(error);
+      toast.error('An error occured');
+    } finally {
+      setPending(false);
     }
   };
+
+  const handleMaskPassword = () => {
+    setIsMasked((prev) => !prev);
+  };
+
   return (
     <>
       <div className='flex min-h-full flex-1 flex-col justify-center px-1 py-6 lg:px-2'>
@@ -64,8 +85,8 @@ const SignUp = () => {
         <div className='mt-3'>
           <button
             type='button'
-            className='flex w-full justify-center rounded border-2 bg-transparent px-3 py-1.5 text-sm font-bold text-indigo-600 hover:text-indigo-400'
-            onClick={() => signIn('google')}
+            className='flex w-full justify-center rounded border-2 bg-transparent px-3 py-1.5  text-center text-sm text-gray-800 hover:border-gray-600 hover:bg-slate-200'
+            onClick={() => signIn('google', { callbackUrl: '/' })}
           >
             or Continue with
             <span className='mx-2'>
@@ -121,7 +142,6 @@ const SignUp = () => {
                   value={data.email}
                   required
                   className='rounded px-3 py-1 text-sm text-gray-500 outline-none'
-                  autoFocus
                   onChange={(e) => setData({ ...data, email: e.target.value })}
                 />
               </div>
@@ -161,26 +181,32 @@ const SignUp = () => {
                   Confirm Password
                 </label>
               </div>
-              <div className='mt-1'>
+              <div className='mt-1 flex'>
                 <input
                   id='Cpassword'
                   name='Cpassword'
-                  type='password'
+                  type={isMasked ? 'password' : 'text'}
                   value={data.Cpassword}
                   required
-                  className='rounded px-3 py-1 text-sm text-gray-500 outline-none'
+                  className={`rounded px-3 py-1 text-sm text-gray-500 outline-none ${
+                    data.password === data.Cpassword && data.password != ''
+                      ? 'border-2 border-green-500'
+                      : 'border-2 border-red-500'
+                  }`}
                   onChange={(e) =>
                     setData({ ...data, Cpassword: e.target.value })
                   }
                 />
+                <Mask isMasked={isMasked} handleClick={handleMaskPassword} />
               </div>
             </div>
             <div>
               <button
                 type='submit'
                 className='flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold text-white hover:bg-indigo-500'
+                disabled={pending ? true : false}
               >
-                Register
+                {pending ? 'Registering...' : 'Register'}
               </button>
             </div>
           </form>

@@ -32,13 +32,13 @@ const handler = NextAuth({
             throw new Error('No User Found!');
           }
           // check if password matches
-          // const isValid = await bcrypt.compare(credentials.password, user.hashedPassword);
-          const isValid = credentials.password === user.hashedPassword
+          const isValid = await bcrypt.compare(credentials.password, user.hashedPassword);
+          // const isValid = credentials.password === user.hashedPassword
           if (!isValid) {
             throw new Error('Incorrect password!')
           }
 
-          return { id: user._id.toString(), name: user.username, email: user.email };
+          return { id: user._id.toString(), name: user.username, email: user.email, image: user.image };
         } catch (error) {
           console.error(error);
           return null;
@@ -47,17 +47,13 @@ const handler = NextAuth({
     })
   ],
   callbacks: {
-    async session({ session }) {
-      const sessionUser = await User.findOne({ email: session.user.email });
-      session.user.id = sessionUser._id.toString();
-
-      return session;
-    },
     async signIn({ user, profile }) {
       try {
+        // allows signing in with credentials
         if (user) {
           return true;
         }
+
         await connectToDB();
 
         // check if a user already exists in mongo database
@@ -76,6 +72,12 @@ const handler = NextAuth({
         console.error(error);
         return false;
       }
+    },
+    async session({ session }) {
+      const sessionUser = await User.findOne({ email: session.user.email });
+      session.user.id = sessionUser._id.toString();
+
+      return session;
     },
   },
 });

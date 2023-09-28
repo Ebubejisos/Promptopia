@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 
 import User from '@models/user';
 import { connectToDB } from '@utils/database';
+import bcrypt from 'bcrypt';
 
 
 export const POST = async (request) => {
@@ -9,20 +10,23 @@ export const POST = async (request) => {
   const { username, email, password } = body;
   // checks for any omitted fields
   if (!username || !password) {
-    return new NextResponse('Missing Fields', { status: 400 })
+    return new NextResponse('Missing fields', { status: 400 })
   }
   try {
     await connectToDB();
     // check if user exists
-    const userExists = await User.findOne({ username });
+    const userExists = await User.findOne({ username: username });
     if (userExists) {
-      throw new Error('User already exists!')
+      // return new NextResponse('User already exists!', { status: 409 });
+      throw new Error('User Already Exists')
     }
     // create a new user in database
+    const defaultImage = 'https://www.iconpacks.net/icons/5/free-icon-no-profile-picture-man-15282.png';
     const newUser = new User({
-      username: username.replace(' ', '').toLowerCase(),
       email: email.replace(' ', '').toLowerCase(),
-      hashedPassword: password,
+      username,
+      image: defaultImage,
+      hashedPassword: await bcrypt.hash(password, 10),
     });
     await newUser.save();
 

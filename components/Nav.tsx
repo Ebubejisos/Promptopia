@@ -10,6 +10,7 @@ import { usePathname, useRouter } from 'next/navigation';
 const Nav = () => {
   // Hooks
   const { data: session } = useSession();
+  console.log(session);
   const router = useRouter();
   const pathName = usePathname();
 
@@ -17,15 +18,6 @@ const Nav = () => {
   const [toggleDropdown, setToggleDropdown] = useState<boolean>(false);
 
   // sideEffects
-  // place page boundaries for signed out users
-  useEffect(() => {
-    if (
-      (!session?.user && pathName != '/login') ||
-      (!session?.user && pathName != '/register')
-    ) {
-      router.replace('/');
-    }
-  }, [session, router]);
 
   return (
     <nav className='flex-between mb-16 w-full pt-3'>
@@ -48,7 +40,7 @@ const Nav = () => {
 
             <button
               type='button'
-              onClick={() => signOut()}
+              onClick={() => signOut({ callbackUrl: '/' })}
               className='outline_btn'
             >
               Sign Out
@@ -115,7 +107,7 @@ const Nav = () => {
                   type='button'
                   onClick={() => {
                     setToggleDropdown(false);
-                    signOut();
+                    signOut({ callbackUrl: '/' });
                   }}
                   className={
                     pathName === '/login' || pathName === '/register'

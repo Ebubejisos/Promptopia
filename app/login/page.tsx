@@ -6,6 +6,7 @@ import Image from 'next/image';
 import { FormEventHandler, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-hot-toast';
+import Mask from '@components/Mask';
 
 const Login = () => {
   // hooks
@@ -15,6 +16,7 @@ const Login = () => {
     username: '',
     password: '',
   });
+  const [isMasked, setIsMasked] = useState(true);
   // FUNCTION
   const handleSubmit: FormEventHandler = async (e) => {
     e.preventDefault();
@@ -49,12 +51,9 @@ const Login = () => {
         <div className='mt-3'>
           <button
             type='button'
-            className='flex w-full justify-center rounded border-2 bg-transparent px-3 py-1.5 text-sm font-bold text-indigo-600 hover:text-indigo-400'
-            onClick={async () =>
-              signIn('google').then(() => router.replace('/'))
-            }
+            className='flex w-full justify-center rounded border-2 bg-transparent px-3 py-1.5  text-center text-sm text-gray-800 hover:border-gray-600 hover:bg-slate-200'
+            onClick={async () => signIn('google', { callbackUrl: '/' })}
           >
-            or Continue with
             <span className='mx-2'>
               <Image
                 src='/assets/images/google.svg'
@@ -64,7 +63,7 @@ const Login = () => {
                 className='mx-auto h-6 w-6'
               />
             </span>
-            Google
+            or Continue with Google
           </button>
         </div>
 
@@ -102,17 +101,21 @@ const Login = () => {
                   Password
                 </label>
               </div>
-              <div className='mt-1'>
+              <div className='mt-1 flex'>
                 <input
                   id='password'
                   name='password'
-                  type='password'
+                  type={isMasked ? 'password' : 'text'}
                   value={data.password}
                   required
-                  className='w-full rounded px-3 py-1 text-sm text-gray-500 outline-none'
+                  className='w-full grow rounded px-3 py-1 text-sm text-gray-500 outline-none'
                   onChange={(e) =>
                     setData({ ...data, password: e.target.value })
                   }
+                />
+                <Mask
+                  isMasked={isMasked}
+                  handleClick={() => setIsMasked((prevState) => !prevState)}
                 />
               </div>
             </div>
