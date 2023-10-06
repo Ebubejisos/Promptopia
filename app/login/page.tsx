@@ -3,7 +3,7 @@
 import { signIn } from 'next-auth/react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { FormEventHandler, useState } from 'react';
+import { FormEventHandler, useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-hot-toast';
 import Mask from '@components/Mask';
@@ -11,20 +11,30 @@ import Mask from '@components/Mask';
 const Login = () => {
   // hooks
   const router = useRouter();
+
   // useStates
   const [data, setData] = useState({
     username: '',
     password: '',
   });
-  const [isMasked, setIsMasked] = useState(true);
+  const [isMasked, setIsMasked] = useState<boolean>(true);
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   // FUNCTION
   const handleSubmit: FormEventHandler = async (e) => {
     e.preventDefault();
+    setIsSubmitting(true);
+
+    if (data.username === '' || data.password === '') {
+      toast.error('Missing username and password');
+      return;
+    }
     signIn('credentials', { ...data, redirect: false }).then((callback) => {
       if (callback?.error) {
-        toast.error(callback.error);
+        setIsSubmitting(false);
+        toast.error('Invalid username or password!');
       }
       if (callback?.ok && !callback?.error) {
+        setIsSubmitting(false);
         router.push('/');
         toast.success('Logged in successfully!');
       }
@@ -123,9 +133,12 @@ const Login = () => {
             <div>
               <button
                 type='submit'
-                className='flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold text-white hover:bg-indigo-500'
+                disabled={isSubmitting ? true : false}
+                className={`flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold text-white ${
+                  isSubmitting ? 'cursor-progress' : 'hover:bg-indigo-500'
+                }`}
               >
-                Sign in
+                {isSubmitting ? 'Signing in...' : 'Sign in'}
               </button>
             </div>
           </form>

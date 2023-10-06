@@ -6,6 +6,7 @@ import bcrypt from 'bcrypt';
 
 import User from '@models/user';
 import { connectToDB } from '@utils/database';
+import { NextResponse } from 'next/server';
 
 const handler = NextAuth({
   providers: [
@@ -20,8 +21,8 @@ const handler = NextAuth({
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-        if (!credentials.username || !credentials.password) {
-          throw new Error('Please enter an email and password');
+        if (credentials.username === '' || credentials.password === '') {
+          throw new Error('Missing username and password');
         }
 
         try {
@@ -35,7 +36,7 @@ const handler = NextAuth({
           const isValid = await bcrypt.compare(credentials.password, user.hashedPassword);
           // const isValid = credentials.password === user.hashedPassword
           if (!isValid) {
-            throw new Error('Incorrect password!')
+            throw new Error('Incorrect password!');
           }
 
           return { id: user._id.toString(), name: user.username, email: user.email, image: user.image };

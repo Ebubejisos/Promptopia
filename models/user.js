@@ -1,5 +1,4 @@
 import mongooseApi from 'mongoose';
-// import bcrypt from 'bcrypt';
 
 const { Schema, model, models } = mongooseApi;
 
@@ -24,7 +23,6 @@ const UserSchema = new Schema({
     type: String,
   },
 });
-
 
 // check if a user is already in the database and if only it is'nt then create a new user using the schema
 const User = models.User || model("User", UserSchema);

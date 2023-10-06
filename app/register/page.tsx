@@ -48,11 +48,7 @@ const SignUp = () => {
         router.push('/login');
       } else {
         const data = await response.json();
-        if (data.error) {
-          toast.error(data.error); // Display the error message returned from the server
-        } else {
-          toast.error('Failed to register'); // Fallback error message
-        }
+        toast.error(data);
       }
     } catch (error) {
       console.error(error);
@@ -118,7 +114,7 @@ const SignUp = () => {
                   name='username'
                   type='text'
                   value={data.name}
-                  required
+                  // required
                   className='rounded px-3 py-1 text-sm text-gray-500 outline-none'
                   autoFocus
                   onChange={(e) => setData({ ...data, name: e.target.value })}
@@ -140,7 +136,7 @@ const SignUp = () => {
                   name='email'
                   type='email'
                   value={data.email}
-                  required
+                  // required
                   className='rounded px-3 py-1 text-sm text-gray-500 outline-none'
                   onChange={(e) => setData({ ...data, email: e.target.value })}
                 />
@@ -163,7 +159,7 @@ const SignUp = () => {
                   name='password'
                   type='password'
                   value={data.password}
-                  required
+                  // required
                   className='rounded px-3 py-1 text-sm text-gray-500 outline-none'
                   onChange={(e) =>
                     setData({ ...data, password: e.target.value })
@@ -187,7 +183,7 @@ const SignUp = () => {
                   name='Cpassword'
                   type={isMasked ? 'password' : 'text'}
                   value={data.Cpassword}
-                  required
+                  // required
                   className={`rounded px-3 py-1 text-sm text-gray-500 outline-none ${
                     data.password === data.Cpassword && data.password != ''
                       ? 'border-2 border-green-500'

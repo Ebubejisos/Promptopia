@@ -9,16 +9,15 @@ export const POST = async (request) => {
   const body = await request.json();
   const { username, email, password } = body;
   // checks for any omitted fields
-  if (!username || !password) {
-    return new NextResponse('Missing fields', { status: 400 })
+  if (username === '' || email === '' || password === '') {
+    return new NextResponse(JSON.stringify('Missing fields!'), { status: 400 })
   }
   try {
     await connectToDB();
     // check if user exists
-    const userExists = await User.findOne({ username: username });
+    const userExists = await User.findOne({ email: email });
     if (userExists) {
-      // return new NextResponse('User already exists!', { status: 409 });
-      throw new Error('User Already Exists')
+      return new NextResponse(JSON.stringify('User already exists!'), { status: 409 });
     }
     // create a new user in database
     const defaultImage = 'https://www.iconpacks.net/icons/5/free-icon-no-profile-picture-man-15282.png';
@@ -33,6 +32,6 @@ export const POST = async (request) => {
     return NextResponse.json(newUser);
   } catch (error) {
     console.error(error);
-    return new NextResponse('Failed to create user!', { status: 500 })
+    return new NextResponse(JSON.stringify(error), { status: 500 })
   }
 }
