@@ -12,6 +12,10 @@ export const POST = async (request) => {
   if (username === '' || email === '' || password === '') {
     return new NextResponse(JSON.stringify('Missing fields!'), { status: 400 })
   }
+  // checks if username matches proper format
+  if (username != /^(?=.{8,20}$)(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$/) {
+    return new NextResponse(JSON.stringify('Username should contain 8-20 alphanumeric letters'), { status: 400 })
+  }
   try {
     await connectToDB();
     // check if user exists

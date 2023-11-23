@@ -3,10 +3,11 @@
 import React, {
   useState,
   useEffect,
-  ChangeEventHandler,
+  FormEventHandler,
   MouseEventHandler,
 } from 'react';
 import PromptCard from './PromptCard';
+import Image from 'next/image';
 
 interface Posts {
   _id: string;
@@ -38,6 +39,7 @@ const Feed = () => {
   // UseStates
   const [searchText, setSearchText] = useState('');
   const [posts, setPosts] = useState<Posts[]>([]);
+  const [isSearching, setIsSearching] = useState<boolean>(false);
   // UseEffect Hook
   useEffect(() => {
     const fetchPosts = async () => {
@@ -50,19 +52,54 @@ const Feed = () => {
     return () => {};
   }, []);
   // Functions
-  const handleSearchChange: ChangeEventHandler = (e) => {};
+  const handleSearch: FormEventHandler = async (e) => {
+    e.preventDefault();
+    setIsSearching(true);
+    try {
+      const response = await fetch('/api/search-prompts', {
+        method: 'POST',
+        body: JSON.stringify({
+          text: searchText,
+        }),
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setPosts(data);
+        console.table(posts);
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsSearching(false);
+    }
+  };
 
   return (
     <section className='feed'>
-      <form className='flex-center relative w-full'>
+      <form className='flex-center relative w-full' onSubmit={handleSearch}>
         <input
           type='text'
           placeholder='Search tags or username'
           value={searchText}
-          onChange={handleSearchChange}
+          onChange={(e) => {
+            setSearchText(e.target.value);
+          }}
           required
           className='search_input peer'
         />
+        <button
+          type='submit'
+          className='-translate-x-6 cursor-pointer self-center'
+          disabled={isSearching ? true : false}
+        >
+          <Image
+            className='h-4 w-4'
+            src={'/assets/icons/magnify.svg'}
+            width={10}
+            height={10}
+            alt={'search-icon'}
+          />
+        </button>
       </form>
 
       <PromptCardList data={posts} handleTagClick={() => {}} />
