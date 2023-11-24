@@ -17,7 +17,7 @@ interface PropType {
   post: Posts;
   handleEdit?: MouseEventHandler;
   handleDelete?: MouseEventHandler;
-  setPosts?: React.Dispatch<React.SetStateAction<Posts[]>>;
+  setPosts?: React.Dispatch<React.SetStateAction<Posts[] | null | undefined>>;
 }
 interface Session {
   user: {
