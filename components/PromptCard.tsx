@@ -14,7 +14,7 @@ interface Posts {
 }
 
 interface PropType {
-  post: Posts;
+  post: Posts| null | undefined;
   handleEdit?: MouseEventHandler;
   handleDelete?: MouseEventHandler;
   setPosts?: React.Dispatch<React.SetStateAction<Posts[] | null | undefined>>;
