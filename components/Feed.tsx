@@ -18,18 +18,14 @@ interface Posts {
 
 interface PromptCardListPropType {
   data: Posts[];
-  handleTagClick: MouseEventHandler;
+  setPosts: React.Dispatch<React.SetStateAction<Posts[]>>;
 }
 
-const PromptCardList = ({ data, handleTagClick }: PromptCardListPropType) => {
+const PromptCardList = ({ data, setPosts }: PromptCardListPropType) => {
   return (
     <div className='prompt_layout mt-16'>
       {data.map((post) => (
-        <PromptCard
-          key={post._id}
-          post={post}
-          handleTagClick={handleTagClick}
-        />
+        <PromptCard key={post._id} post={post} setPosts={setPosts} />
       ))}
     </div>
   );
@@ -65,7 +61,7 @@ const Feed = () => {
       if (response.ok) {
         const data = await response.json();
         setPosts(data);
-        console.table(posts);
+        console.log(posts);
       }
     } catch (error) {
       console.error(error);
@@ -87,22 +83,28 @@ const Feed = () => {
           required
           className='search_input peer'
         />
-        <button
-          type='submit'
-          className='-translate-x-6 cursor-pointer self-center'
-          disabled={isSearching ? true : false}
-        >
-          <Image
-            className='h-4 w-4'
-            src={'/assets/icons/magnify.svg'}
-            width={10}
-            height={10}
-            alt={'search-icon'}
-          />
-        </button>
+        {isSearching ? (
+          <span className='-translate-x-20 text-sm text-slate-500'>
+            ...Searching
+          </span>
+        ) : (
+          <button
+            type='submit'
+            className='-translate-x-6 cursor-pointer self-center'
+            disabled={isSearching ? true : false}
+          >
+            <Image
+              className='h-4 w-4'
+              src={'/assets/icons/magnify.svg'}
+              width={10}
+              height={10}
+              alt={'search-icon'}
+            />
+          </button>
+        )}
       </form>
 
-      <PromptCardList data={posts} handleTagClick={() => {}} />
+      <PromptCardList data={posts} setPosts={setPosts} />
     </section>
   );
 };

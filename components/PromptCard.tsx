@@ -6,16 +6,18 @@ import { usePathname, useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 
 // types
+interface Posts {
+  _id: string;
+  creator: any;
+  prompt: string;
+  tag: string;
+}
+
 interface PropType {
-  post: {
-    _id: string;
-    creator: any;
-    prompt: string;
-    tag: string;
-  };
-  handleTagClick?: MouseEventHandler;
+  post: Posts;
   handleEdit?: MouseEventHandler;
   handleDelete?: MouseEventHandler;
+  setPosts: React.Dispatch<React.SetStateAction<Posts[]>>;
 }
 interface Session {
   user: {
@@ -27,12 +29,7 @@ interface Session {
 }
 
 // React Component
-const PromptCard = ({
-  post,
-  handleTagClick,
-  handleEdit,
-  handleDelete,
-}: PropType) => {
+const PromptCard = ({ post, handleEdit, handleDelete, setPosts }: PropType) => {
   // Hooks
   const pathName = usePathname();
   const { data: session } = useSession();
@@ -45,7 +42,22 @@ const PromptCard = ({
     navigator.clipboard.writeText(post.prompt);
     setTimeout(() => setCopied(''), 3000);
   };
-
+  const handleTagClick = async () => {
+    try {
+      const response = await fetch('/api/search-prompts', {
+        method: 'POST',
+        body: JSON.stringify({
+          text: post.tag,
+        }),
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setPosts(data);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
   return (
     <>
       <div className='prompt_card'>
@@ -85,7 +97,7 @@ const PromptCard = ({
         <p className='my-4 font-satoshi text-sm text-gray-700'>{post.prompt}</p>
         <p
           className='blue_gradient cursor-pointer font-inter text-sm'
-          onClick={() => handleTagClick}
+          onClick={handleTagClick}
         >
           {' '}
           {post.tag}
