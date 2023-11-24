@@ -13,7 +13,7 @@ interface PropType {
   name?: string;
   desc?: string;
   data: Post[];
-  setPosts?: React.Dispatch<React.SetStateAction<Post[]>>;
+  setPosts?: React.Dispatch<React.SetStateAction<Post[] | null | undefined>>;
   handleEdit?: (arg: Post) => void;
   handleDelete?: (arg: Post) => void;
 }
