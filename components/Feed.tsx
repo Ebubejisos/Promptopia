@@ -17,8 +17,8 @@ interface Posts {
 }
 
 interface PromptCardListPropType {
-  data: Posts[];
-  setPosts: React.Dispatch<React.SetStateAction<Posts[]>>;
+  data: Posts[]| null | undefined;
+  setPosts: React.Dispatch<React.SetStateAction<Posts[] | null | undefined>>;
 }
 
 const PromptCardList = ({ data, setPosts }: PromptCardListPropType) => {
