@@ -12,7 +12,7 @@ interface Post {
 interface PropType {
   name?: string;
   desc?: string;
-  data: Post[]| null | undefined;
+  data: Post[];
   setPosts?: React.Dispatch<React.SetStateAction<Post[] | null | undefined>>;
   handleEdit?: (arg: Post) => void;
   handleDelete?: (arg: Post) => void;
@@ -34,6 +34,9 @@ const Profile = ({ name, desc, data, handleEdit, handleDelete }: PropType) => {
               post={post}
               handleEdit={() => handleEdit && handleEdit(post)}
               handleDelete={() => handleDelete && handleDelete(post)}
+              setPosts={function (value: React.SetStateAction<Post[]>): void {
+                throw new Error('Function not implemented.');
+              }}
             />
           ))}
         </div>
