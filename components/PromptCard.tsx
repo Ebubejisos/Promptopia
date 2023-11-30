@@ -2,7 +2,7 @@
 
 import { MouseEventHandler, useState } from 'react';
 import Image from 'next/image';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 
 // types
@@ -14,10 +14,10 @@ interface Posts {
 }
 
 interface PropType {
-  post: Posts| null | undefined;
+  post: Posts;
   handleEdit?: MouseEventHandler;
   handleDelete?: MouseEventHandler;
-  setPosts?: React.Dispatch<React.SetStateAction<Posts[] | null | undefined>>;
+  setPosts: React.Dispatch<React.SetStateAction<Posts[]>>;
 }
 interface Session {
   user: {

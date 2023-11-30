@@ -17,8 +17,8 @@ interface Posts {
 }
 
 interface PromptCardListPropType {
-  data: Posts[]| null | undefined;
-  setPosts: React.Dispatch<React.SetStateAction<Posts[] | null | undefined>>;
+  data: Posts[];
+  setPosts: React.Dispatch<React.SetStateAction<Posts[]>>;
 }
 
 const PromptCardList = ({ data, setPosts }: PromptCardListPropType) => {
@@ -41,6 +41,7 @@ const Feed = () => {
     const fetchPosts = async () => {
       const response = await fetch('/api/prompt');
       const data = await response.json();
+      console.log(data);
       setPosts(data);
     };
     fetchPosts();
@@ -61,7 +62,6 @@ const Feed = () => {
       if (response.ok) {
         const data = await response.json();
         setPosts(data);
-        console.log(posts);
       }
     } catch (error) {
       console.error(error);
