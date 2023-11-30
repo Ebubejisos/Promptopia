@@ -9,6 +9,7 @@ export const POST = async (request, response) => {
   try {
     await connectToDB();
     let results = await Prompt.find({ tag: { $regex: regexPattern } }).populate('creator');
+    // finds by username if the user input does not match any tags
     if (results.length === 0) {
       const allPrompts = await Prompt.find({}).populate('creator');
       results = allPrompts.filter((prompt) => regexPattern.test(prompt.creator.username))

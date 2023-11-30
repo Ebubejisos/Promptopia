@@ -1,13 +1,9 @@
 'use client';
 
-import React, {
-  useState,
-  useEffect,
-  FormEventHandler,
-  MouseEventHandler,
-} from 'react';
+import React, { useState, useEffect, FormEventHandler } from 'react';
 import PromptCard from './PromptCard';
 import Image from 'next/image';
+import { toast } from 'react-hot-toast';
 
 interface Posts {
   _id: string;
@@ -36,13 +32,14 @@ const Feed = () => {
   const [searchText, setSearchText] = useState('');
   const [posts, setPosts] = useState<Posts[]>([]);
   const [isSearching, setIsSearching] = useState<boolean>(false);
+  const [noSearchResults, setNoSearchResults] = useState<boolean>(false);
   // UseEffect Hook
   useEffect(() => {
     const fetchPosts = async () => {
       const response = await fetch('/api/prompt');
       const data = await response.json();
-      console.log(data);
       setPosts(data);
+      setNoSearchResults(false);
     };
     fetchPosts();
 
@@ -52,6 +49,7 @@ const Feed = () => {
   const handleSearch: FormEventHandler = async (e) => {
     e.preventDefault();
     setIsSearching(true);
+    setNoSearchResults(false);
     try {
       const response = await fetch('/api/search-prompts', {
         method: 'POST',
@@ -61,6 +59,10 @@ const Feed = () => {
       });
       if (response.ok) {
         const data = await response.json();
+        if (data.length === 0) {
+          toast.error('No search results!');
+          setNoSearchResults(true);
+        }
         setPosts(data);
       }
     } catch (error) {
@@ -103,7 +105,7 @@ const Feed = () => {
           </button>
         )}
       </form>
-
+      {noSearchResults && <h1 className='text-xl'>No results found</h1>}
       <PromptCardList data={posts} setPosts={setPosts} />
     </section>
   );
