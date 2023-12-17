@@ -33,8 +33,8 @@ const handler = NextAuth({
             throw new Error('No User Found!');
           }
           // check if password matches
-          const isValid = await bcrypt.compare(credentials.password, user.hashedPassword);
-          // const isValid = credentials.password === user.hashedPassword
+          // const isValid = await bcrypt.compare(credentials.password, user.hashedPassword);
+          const isValid = credentials.password === user.hashedPassword
           if (!isValid) {
             throw new Error('Incorrect password!');
           }
@@ -51,7 +51,7 @@ const handler = NextAuth({
     async signIn({ user, profile }) {
       try {
         // allows signing in with credentials
-        if (user) {
+        if (!profile && user) {
           return true;
         }
 

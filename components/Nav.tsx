@@ -10,7 +10,6 @@ import { usePathname, useRouter } from 'next/navigation';
 const Nav = () => {
   // Hooks
   const { data: session } = useSession();
-  console.log(session);
   const router = useRouter();
   const pathName = usePathname();
 
