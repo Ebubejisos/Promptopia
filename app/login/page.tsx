@@ -61,9 +61,10 @@ const Login = () => {
         <div className='mt-3'>
           <button
             type='button'
-            className='flex w-full justify-center rounded border-2 bg-transparent px-3 py-1.5  text-center text-sm text-gray-800 hover:border-gray-600 hover:bg-slate-200'
+            className='flex w-full items-center justify-center rounded border-2 bg-transparent px-3 py-1.5  text-center text-sm text-gray-800 transition duration-700 ease-in-out hover:border-gray-600 hover:bg-slate-200'
             onClick={async () => signIn('google', { callbackUrl: '/' })}
           >
+            or Continue with Google
             <span className='mx-2'>
               <Image
                 src='/assets/images/google.svg'
@@ -73,7 +74,6 @@ const Login = () => {
                 className='mx-auto h-6 w-6'
               />
             </span>
-            or Continue with Google
           </button>
         </div>
 
@@ -134,7 +134,7 @@ const Login = () => {
               <button
                 type='submit'
                 disabled={isSubmitting ? true : false}
-                className={`flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold text-white ${
+                className={`flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold text-white transition duration-700 ease-in-out ${
                   isSubmitting ? 'cursor-progress' : 'hover:bg-indigo-500'
                 }`}
               >
