@@ -44,7 +44,7 @@ const Feed = () => {
     fetchPosts();
 
     return () => {};
-  }, []);
+  }, [setPosts]);
   // Functions
   const handleSearch: FormEventHandler = async (e) => {
     e.preventDefault();
