@@ -31,21 +31,25 @@ const Feed = () => {
   // UseStates
   const [searchText, setSearchText] = useState('');
   const [posts, setPosts] = useState<Posts[]>([]);
+  const [isFetchingPosts, setIsFetchingPosts] = useState<boolean>(false);
   const [isSearching, setIsSearching] = useState<boolean>(false);
   const [noSearchResults, setNoSearchResults] = useState<boolean>(false);
   // UseEffect Hook
   useEffect(() => {
-    const fetchPosts = async () => {
-      const response = await fetch('/api/prompt');
-      const data = await response.json();
-      setPosts(data);
-      setNoSearchResults(false);
-    };
     fetchPosts();
 
     return () => {};
   }, [setPosts]);
   // Functions
+  const fetchPosts = async () => {
+    setIsFetchingPosts(true);
+    const response = await fetch('/api/prompt');
+    const data = await response.json();
+    setPosts(data);
+    setNoSearchResults(false);
+    setIsFetchingPosts(false);
+  };
+
   const handleSearch: FormEventHandler = async (e) => {
     e.preventDefault();
     setIsSearching(true);
@@ -106,6 +110,24 @@ const Feed = () => {
         )}
       </form>
       {noSearchResults && <h1 className='text-xl'>No results found</h1>}
+      {/* button that fetches posts */}
+
+      {isFetchingPosts ? (
+        <div className='flex-center w-full'>
+          {/* use svg importing from assets */}
+          <Image
+            className='h-8 w-8 animate-spin text-slate-500'
+            src={'/assets/icons/loader.svg'}
+            width={32}
+            height={32}
+            alt={'loader-icon'}
+          />
+        </div>
+      ) : (
+        <button onClick={fetchPosts} className='black_btn transition'>
+          All Posts
+        </button>
+      )}
       <PromptCardList data={posts} setPosts={setPosts} />
     </section>
   );
