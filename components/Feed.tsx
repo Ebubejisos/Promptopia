@@ -39,7 +39,7 @@ const Feed = () => {
     fetchPosts();
 
     return () => {};
-  }, [setPosts]);
+  }, []);
   // Functions
   const fetchPosts = async () => {
     setIsFetchingPosts(true);
