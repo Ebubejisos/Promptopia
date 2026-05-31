@@ -1,6 +1,7 @@
 import React, { MouseEventHandler } from 'react';
 
 import PromptCard from './PromptCard';
+import Image from 'next/image';
 
 // typescript types
 interface Post {
@@ -28,17 +29,29 @@ const Profile = ({ name, desc, data, handleEdit, handleDelete }: PropType) => {
         <p className='desc text-left'>{desc}</p>
 
         <div className='prompt_layout mt-10'>
-          {data.map((post) => (
-            <PromptCard
-              key={post._id}
-              post={post}
-              handleEdit={() => handleEdit && handleEdit(post)}
-              handleDelete={() => handleDelete && handleDelete(post)}
-              setPosts={function (value: React.SetStateAction<Post[]>): void {
-                throw new Error('Function not implemented.');
-              }}
-            />
-          ))}
+          {data.length === 0 ? (
+            <>
+              <Image
+                className='h-8 w-8 animate-spin text-slate-500'
+                src={'/assets/icons/loader.svg'}
+                width={32}
+                height={32}
+                alt={'loader-icon'}
+              />
+            </>
+          ) : (
+            data.map((post) => (
+              <PromptCard
+                key={post._id}
+                post={post}
+                handleEdit={() => handleEdit && handleEdit(post)}
+                handleDelete={() => handleDelete && handleDelete(post)}
+                setPosts={function (value: React.SetStateAction<Post[]>): void {
+                  throw new Error('Function not implemented.');
+                }}
+              />
+            ))
+          )}
         </div>
       </section>
     </>
